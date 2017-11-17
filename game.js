@@ -16,7 +16,7 @@ var downArrow = new Image();
 downArrow.src = "img/down.png";
 var botao = {};
 
-var refreshIntervalId;
+var Desenha;
 var cronometro;
 
 var barra = {x: 10,	y: canvas.height / 2 - 60, AltBar: 90, largura: 15, dirY: 0, Vidas: 1, velocidade: 10};
@@ -41,8 +41,26 @@ function comeca(){
 	btnComeca.style.visibility = "hidden";
 	btnInstrucao.style.visibility = "hidden";
 	cronometro = setInterval(tempo,1000);
-	refreshIntervalId = setInterval(desenha, 5);
+	Desenha = setInterval(desenha, 5);
 	ReiniciaJogo();
+}
+
+function fimJogo(){
+	clearInterval(Desenha);
+	clearInterval(cronometro);
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	GameOver.play();
+	GameOver.volume = 0.2;
+	btnComeca.style.visibility = "visible";
+	btnInstrucao.style.visibility = "visible";
+	music.pause();
+	music.load();
+	ctx.fillStyle = "black";
+	ctx.fillRect(barra.x, barra.y, barra.largura, barra.AltBar);
+	ctx.font = "40px Times New Roman";
+	ctx.fillStyle = "white";
+	ctx.fillText("Você Perdeu!", 280,200);
+	ctx.fillText("Duração em jogo:    "+ContadorMin+":"+ContadorSeg, 180,310);
 }
 
 function instrucao(){
@@ -65,7 +83,6 @@ function tempo(){
 		ContadorMin++;
 	}
 	ContadorSeg++;
-
 };
 
 function ReiniciaJogo(){
@@ -73,10 +90,6 @@ function ReiniciaJogo(){
 	ContadorMin = 0;
 	barra.Vidas = 1;
 }
-
-
-
-
 
 document.addEventListener("keydown", function(e) {
 	botao[e.keyCode] = true;
@@ -153,45 +166,23 @@ function MoveInvader() {
 			VerificaColisao("colidiu2");
 		}
 	}
-
-
 };
 
 function VerificaColisao(colidiu) {
 	if(colidiu == "colidiu1"){
 		barra.Vidas --;
 		if (barra.Vidas <= 0){
-			GameOver.play();
-			btnComeca.style.visibility = "visible";
-			clearInterval(refreshIntervalId);
-			clearInterval(cronometro);
-			music.pause();
-			music.load();
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			ctx.font = "40px Times New Roman";
-			ctx.fillStyle = "white";
-			ctx.fillText("Você Perdeu!", 280,250);
-			ctx.fillText("Duração em jogo:    "+ContadorMin+":"+ContadorSeg, 180,290);
+			fimJogo();
 		}
-			barra.y = canvas.height / 2 - barra.AltBar / 2;
-			invad1.y = canvas.height / 2 - invad1.altura / 2;
+		barra.y = canvas.height / 2 - barra.AltBar / 2;
+		invad1.y = canvas.height / 2 - invad1.altura / 2;
 		invad1.x = canvas.width / 2 - invad1.largura / 2;
 		invad1.mod = 0;
 	}
 	if(colidiu == "colidiu2"){
 		barra.Vidas --;
 		if (barra.Vidas <= 0){
-			GameOver.play();
-			music.load();
-			btnComeca.style.visibility = "visible";
-			clearInterval(refreshIntervalId);
-			clearInterval(cronometro);
-			music.pause();
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			ctx.font = "40px Times New Roman";
-			ctx.fillStyle = "white";
-			ctx.fillText("Você Perdeu!", 280,250);
-			ctx.fillText("Duração em jogo:    "+ContadorMin+":"+ContadorSeg, 190,290);
+			fimJogo();
 		}
 		barra.y = canvas.height / 2 - barra.AltBar / 2;
 		invad1.y = canvas.height / 2 - invad1.altura / 2;
@@ -200,33 +191,25 @@ function VerificaColisao(colidiu) {
 	}
 };
 
-
-
-
 function desenha() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	invader.src = corInvader[Math.floor(Math.random()*corInvader.length)];
 	music.play()
 	music.volume = 0.2;
-	MoveBarra();
-	MoveInvader();
-
-	
 	ctx.drawImage(invader,invad1.x, invad1.y,50,50);
-
 	ctx.fillStyle = coresBarra[Math.floor(Math.random()*coresBarra.length)];
 	ctx.fillRect(barra.x, barra.y, barra.largura, barra.AltBar);
-
 	if(ContadorSeg > 20){
 		ctx.drawImage(invader,invad2.x, invad2.y,50,50);
-	}
-
+	};
 	ctx.font = "24px Times New Roman";
 	ctx.fillStyle = "white";
 	ctx.fillText("Vidas: " + barra.Vidas, 50, 20);
 	ctx.font = "24px Times New Roman";
 	ctx.fillStyle = "white";
-	ctx.fillText("Tempo:  "+ContadorMin+":"+ContadorSeg ,500,20);		
+	ctx.fillText("Tempo:  "+ContadorMin+":"+ContadorSeg ,500,20);
+	MoveBarra();	
+	MoveInvader();
 };
 			
 			
