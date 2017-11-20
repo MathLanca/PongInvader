@@ -1,4 +1,4 @@
-var canvas = document.getElementById("mycanvas");
+var canvas = document.getElementById("tela");
 var ctx = canvas.getContext("2d");
 
 var coresBarra = ["blue","red","yellow","green"];
@@ -41,7 +41,7 @@ function comeca(){
 	btnComeca.style.visibility = "hidden";
 	btnInstrucao.style.visibility = "hidden";
 	cronometro = setInterval(tempo,1000);
-	Desenha = setInterval(desenha, 5);
+	Desenha = setInterval(jogo, 5);
 	ReiniciaJogo();
 }
 
@@ -191,7 +191,7 @@ function VerificaColisao(colidiu) {
 	}
 };
 
-function desenha() {
+function jogo() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	invader.src = corInvader[Math.floor(Math.random()*corInvader.length)];
 	music.play()
